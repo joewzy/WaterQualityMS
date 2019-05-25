@@ -1,4 +1,8 @@
+#include <Wire.h>
+#include <Adafruit_ADS1015.h>
 
+Adafruit_ADS1115 ads(0x48);
+float Voltage = 0.0;
 
 // lcd ----- SDA=D2/GPIO4,  SCL=D1/GPIO5
 #define senseInput 02   //Set to A0 as Analog Read
@@ -17,14 +21,17 @@ int buf[10],temp;
 int sensorval=0;
 long int avgval;
 
+
 void setup(){
+  // for the ads1115(analog extender)  
+  ads.begin();
+  ///////  sensor setups or requirements
   pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
   pinMode(echoPin, INPUT); // Sets the echoPin as an Input
   Serial.begin(115200); //Set as serial communication baud rate 9600
   Serial.println("  TURBIDITY AND ULTRASONIC SENSORS ");
   Serial.println("Initializing.................................");
-  Serial.println("Maxim / Dallas DS18B20 readout program");
- 
+  Serial.println("Maxim / Dallas DS18B20 readout program"); 
   delay(4000);
 }
 void loop(){
@@ -37,26 +44,28 @@ void loop(){
 }
 
 void myturb(){
-Serial.println(senseRawValue);
-senseRawValue = analogRead(senseInput); //Read input raw value fromt the sensor
-senseTurbidity = senseRawValue * (5.0 / 1024.0); //Convert analog data from 0 -1024 to voltage 0 - 5v;
-Serial.print("TURBIDITY VALUE > "); //Print the output data to the serial
+  int16_t adc1;  // we read from the ADC, we have a sixteen bit integer as a result
+ 
+ adc1 = ads.readADC_SingleEnded(1);
+  float voltage = (adc1 * 0.1875)/1000;
+  senseTurbidity= voltage+1;
+//Serial.println(senseRawValue);
+//senseRawValue = analogRead(senseInput); //Read input raw value fromt the sensor
+//senseTurbidity = senseRawValue * (5.0 / 1024.0); //Convert analog data from 0 -1024 to voltage 0 - 5v;
+Serial.print("TURBIDITY VALUE --z> "); //Print the output data to the serial
 Serial.println(senseTurbidity);
 delay(500);
 
-  if (senseTurbidity>4.0 ){
-     Serial.println("Water is clear ");
+  if (senseTurbidity>3.40 ){
+     Serial.println("\t Water is clear \n");
     }
    
-  if (senseTurbidity<4.0 && senseTurbidity>3.5 ){
-     Serial.println("Water is not clear ");
+  if (senseTurbidity<3.40 && senseTurbidity>2.90 ){
+     Serial.println("\t Water is not clear \n");
     }
 
-  else if (senseTurbidity<3.5 && senseTurbidity>2.7){
-    Serial.println("Water is very dirt");
-    }  
-  else if(senseTurbidity<2.7)
-    Serial.println("Warning. Water is muddy or very cloudy!!!!!!!");
+  else if(senseTurbidity<2.90)
+    Serial.println("\t Warning. Water is muddy or very cloudy!!!!!!! \n");
   }
 
 
@@ -103,9 +112,16 @@ delay(500);
 
 // PH FUNCTION 
   float myph(){
+
+//////// using the ads1115 for the ph meter
+ int16_t adc0;  // we read from the ADC, we have a sixteen bit integer as a result
+
+  adc0 = ads.readADC_SingleEnded(0);
+ 
   
   for(int i=0;i<10;i++){
-   buf[i]= analogRead(analogpin);
+   //buf[i]= analogRead(analogpin);
+   buf[i]= adc0;
     delay(100);
     }
   for(int i=0;i<9;i++){
@@ -121,10 +137,11 @@ delay(500);
     }  
   avgval=0;
   for(int i=2;i<8;i++){avgval+=buf[i];    }
-  float phvol1=(float)avgval/6;
-  Serial.print(phvol1);
-  float phvol=(float)avgval*(5.0/1024)/6 ;
-  float phval= -3.6585*phvol+21.864;
+
+ // float phvol=(float)avgval*(5.0/1024)/6 ;
+  float ads_avg= avgval/6;
+  float phvol= (ads_avg * 0.1875)/1000;
+  float phval= -3.7429*phvol + 15.791;
   Serial.print("Sensor = ");
   Serial.println(phval);
 
