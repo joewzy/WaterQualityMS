@@ -1,3 +1,8 @@
+/*created May 24,2019
+ * By Josiah
+ * On Espduino-32
+ */
+
 #include <Wire.h>
 #include <Adafruit_ADS1015.h>
 
