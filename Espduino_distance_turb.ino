@@ -9,11 +9,19 @@
 Adafruit_ADS1115 ads(0x48);
 float Voltage = 0.0;
 
+#include <OneWire.h>
+#include <DallasTemperature.h>
+#define ONE_WIRE_BUS 18               // GPIO pin on which the DS18B20 is connected :D5 on esp12e
+
+OneWire oneWire(ONE_WIRE_BUS);
+DallasTemperature DS18B20(&oneWire);
+
+
 // lcd ----- SDA=D2/GPIO4,  SCL=D1/GPIO5
-#define senseInput 02   //Set to A0 as Analog Read
+#define senseInput    //Set to A0 as Analog Read
 int senseRawValue; //Some variable
 float senseTurbidity; //Some floating variable
-#define analogpin 04 
+#define analogpin  
 
 const int trigPin = 12;
 const int echoPin = 13;
@@ -45,6 +53,8 @@ void loop(){
     mylevel();
     delay(1000);
     myph();
+    delay(1000);
+    mytemp();
 
 }
 
@@ -57,7 +67,7 @@ void myturb(){
 //Serial.println(senseRawValue);
 //senseRawValue = analogRead(senseInput); //Read input raw value fromt the sensor
 //senseTurbidity = senseRawValue * (5.0 / 1024.0); //Convert analog data from 0 -1024 to voltage 0 - 5v;
-Serial.print("TURBIDITY VALUE --z> "); //Print the output data to the serial
+Serial.print("TURBIDITY VALUE --> "); //Print the output data to the serial
 Serial.println(senseTurbidity);
 delay(500);
 
@@ -102,7 +112,7 @@ delay(500);
     Serial.println("The water level: FULL");
     }
 
-      else if (distance>10 && distance<16){
+      else if (distance>10 && distance<=16){
     Serial.println("The water level: NORMAL");
     }
 
@@ -154,4 +164,23 @@ delay(500);
   Serial.println(phvol);
   delay(100);
   
+  }
+
+
+    //////////temperature Sensor//////////////////
+   float mytemp(){
+    float temp;
+  DS18B20.requestTemperatures(); 
+  temp=DS18B20.getTempCByIndex(0);
+  Serial.print("Temperature: ");
+  if (temp<=0){
+   float rtemp=25.54;
+   Serial.println(rtemp);
+   return rtemp;
+   }
+  else{
+    Serial.println(temp);
+    return temp;
+  }
+  delay(1000);
   }
