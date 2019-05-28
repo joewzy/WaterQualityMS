@@ -86,19 +86,21 @@ Serial.print("TURBIDITY VALUE --> "); //Print the output data to the serial
 Serial.println(senseTurbidity);
 delay(1000);
 
-  if (senseTurbidity>3.40 ){
-     Serial.println("\t Water is clear \n");
+  if (senseTurbidity>=3.90 ){
+     Serial.println("\t The Water is clear \n");
      greenled();
     }
    
-  if (senseTurbidity<3.40 && senseTurbidity>2.61 ){
-     Serial.println("\t Water is not clear \n");
+  if (senseTurbidity<3.90 && senseTurbidity>=3.30 ){
+     Serial.println("\t The Water is a bit clear \n");
      buzz();
     }
 
-  else if(senseTurbidity<=2.61){
-    Serial.println("\t Warning. Water is muddy or very cloudy!!!!!!! \n");
+  else if(senseTurbidity<3.30){
+    Serial.println("\t Warning. Water is very cloudy,Change or Treat Water!!! \n");
     redled();
+    buzz();
+    delay(2);
     buzz();
   }
   }
@@ -143,6 +145,8 @@ delay(1000);
       Serial.println("The water level: LOW");
       buzz();
       redled();
+      delay(2);
+      buzz();
     }
     
     delay(1000);
@@ -188,6 +192,14 @@ delay(1000);
    Serial.print("Voltage = ");
   Serial.println(phvol);
   delay(100);
+
+  if (phval <=0 || phval>13.90){
+    
+    redled();
+    buzz();
+    delay(1);
+    buzz();
+    }
   
   }
 
