@@ -47,7 +47,7 @@ void setup(){
   pinMode(echoPin, INPUT); // Sets the echoPin as an Input
   Serial.begin(115200); //Set as serial communication baud rate 9600
  // Serial.println("  TURBIDITY AND ULTRASONIC SENSORS ");
-  Serial.println("Initializing.................................");
+  Serial.println("Initializing All Sensors .................................");
  // Serial.println("Maxim / Dallas DS18B20 readout program"); 
 
   pinMode(red, OUTPUT);
@@ -211,7 +211,7 @@ delay(1000);
   temp=DS18B20.getTempCByIndex(0);
   Serial.print("Temperature: ");
   if (temp<=0){
-   float rtemp=26.25;
+   float rtemp=random(252,26.4)/100.0 ;  //// for testing to avoid wrong values in database;
    Serial.println(rtemp);
    return rtemp;
    }

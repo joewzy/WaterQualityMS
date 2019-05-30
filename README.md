@@ -8,4 +8,6 @@ The WQMS features a web interface as an extra to the physical system.The system 
 2. Waterproof temperature sensor(DS18B20).
 3. SKU SEN0189.
 4. E-201-C pH meter.
+5. wqms.herokuapp.com
+The site for monitoring and data collection  is the above(no. 5).
 The various componenets are neatly arranged and placed on a PCB. Espduino features a WIFI shield which is used to connect to the webserver for data collection
