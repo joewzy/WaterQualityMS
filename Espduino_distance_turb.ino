@@ -1,5 +1,5 @@
 /*created May 24,2019
- * By Josiah
+ * By Josiah  
  * On Espduino-32
  */
 
@@ -46,9 +46,9 @@ void setup(){
   pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
   pinMode(echoPin, INPUT); // Sets the echoPin as an Input
   Serial.begin(115200); //Set as serial communication baud rate 9600
-  Serial.println("  TURBIDITY AND ULTRASONIC SENSORS ");
+ // Serial.println("  TURBIDITY AND ULTRASONIC SENSORS ");
   Serial.println("Initializing.................................");
-  Serial.println("Maxim / Dallas DS18B20 readout program"); 
+ // Serial.println("Maxim / Dallas DS18B20 readout program"); 
 
   pinMode(red, OUTPUT);
   pinMode(green, OUTPUT);
