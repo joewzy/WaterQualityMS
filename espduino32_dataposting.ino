@@ -118,7 +118,7 @@ void loop() {
        //M MY_SERIAL.println(" helloo");
         MY_SERIAL.println(ourdata);
 
-        MY_SERIAL.print("[HTTP] GET...\n");
+        MY_SERIAL.print("[HTTP] POST...\n");
         // start connection and send HTTP header
         http.addHeader("Content-Type","text/plain");        
         int httpCode = http.POST(ourdata);
@@ -126,7 +126,7 @@ void loop() {
         // httpCode will be negative on error
         if(httpCode > 0) {
             // HTTP header has been send and Server response header has been handled
-            MY_SERIAL.printf("[HTTP] GET... code: %d\n", httpCode);
+            MY_SERIAL.printf("[HTTP] POST... code: %d\n", httpCode);
 
             // file found at server
             if(httpCode == HTTP_CODE_OK) {
@@ -136,7 +136,16 @@ void loop() {
         }
         
         else {
-            MY_SERIAL.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
+            MY_SERIAL.printf("[HTTP] POST... failed, error: %s\n", http.errorToString(httpCode).c_str());
+            
+             if (wifiMulti.run()!= WL_CONNECTED) { //Check for the connection
+             delay(1000);
+              MY_SERIAL.println("Reconnecting to WiFi..");
+              wifiMulti.run();
+             }
+             else {
+              MY_SERIAL.println("Reconnected");
+              }
         }
 
         http.end();
