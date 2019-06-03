@@ -36,6 +36,8 @@ int buf[10],temp;
 int sensorval=0;
 long int avgval;
 
+int brdled =02;
+
 
 
 
@@ -54,7 +56,9 @@ WiFiMulti wifiMulti;
 
 
 void setup() {
-  
+
+    pinMode(brdled,OUTPUT); 
+    
     MY_SERIAL.begin(115200);
 
     MY_SERIAL.println();
@@ -82,7 +86,8 @@ void setup() {
 ////////////////////Setup for the sensors and ads1115//////////////////    
   pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
   pinMode(echoPin, INPUT); // Sets the echoPin as an Input
- 
+
+  
   ads.begin(); //  enables the ADC1115 
   MY_SERIAL.println("Initializing All Sensors.....................");
 
@@ -104,10 +109,11 @@ void loop() {
   
     // wait for WiFi connection
     if((wifiMulti.run() == WL_CONNECTED)) {
-       
-        MY_SERIAL.println(" ...after if statement");
+        digitalWrite(brdled,HIGH);
+        delay(2000);
+        digitalWrite(brdled,LOW);
+      
         HTTPClient http;
-       // MY_SERIAL.println(" ...immediately after httpClient object");
         MY_SERIAL.print("[HTTP] begin...\n");
         // configure traged server and url
         http.begin("https://wqms.herokuapp.com/postData"); //HTTP
@@ -146,6 +152,9 @@ void loop() {
              }
              else {
               MY_SERIAL.println("Reconnected");
+               digitalWrite(brdled,HIGH);
+               delay(2000);
+               digitalWrite(brdled,LOW);
               }
         }
 
@@ -179,7 +188,7 @@ float myturb(){
     }
    
   if (senseTurbidity<3.90 && senseTurbidity>=3.30 ){
-     MY_SERIAL.println("\t Water is not clear \n");
+     MY_SERIAL.println("\t Water is normal clear \n");
    
     }
 
@@ -201,12 +210,12 @@ float myturb(){
     digitalWrite(trigPin, LOW);
     // Reads the echoPin, returns the sound wave travel time in microseconds
     duration = pulseIn(echoPin, HIGH);
-    /*
+    
     // Calculating the distance for my tank
     mydistance= duration/58;
     distance= tankheight-mydistance;
-    */
-     distance=duration / 58; 
+    
+     //distance=duration / 58; 
      return distance;
         MY_SERIAL.println(distance);
     // Prints the distance on the Serial Monitor
@@ -291,9 +300,10 @@ float myturb(){
   DS18B20.requestTemperatures(); 
   temp=DS18B20.getTempCByIndex(0);
   MY_SERIAL.print("Temperature: ");
-  MY_SERIAL.println(temp);
+  float rtemp=random(253,262)/10.0; // generate a number for testing
+  MY_SERIAL.println(rtemp);
   if (temp<=0){
-   float rtemp=random(253,262)/10.0; // generate a number for testing
+  
    return rtemp;
    }
   else{
