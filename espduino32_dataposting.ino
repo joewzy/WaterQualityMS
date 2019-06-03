@@ -75,7 +75,7 @@ void setup() {
     MY_SERIAL.println("Connecting to WiFi..");
   }
  
-   MY_SERIAL.println("Connected to the WiFi network");
+   MY_SERIAL.println("WiFi network connected");
  
 
 
@@ -137,11 +137,12 @@ void loop() {
         
         else {
             MY_SERIAL.printf("[HTTP] POST... failed, error: %s\n", http.errorToString(httpCode).c_str());
-            
-             if (wifiMulti.run()!= WL_CONNECTED) { //Check for the connection
-             delay(1000);
-              MY_SERIAL.println("Reconnecting to WiFi..");
               wifiMulti.run();
+             if (wifiMulti.run()!= WL_CONNECTED) { //Check for the connection
+               delay(1000);
+               wifiMulti.run();
+              MY_SERIAL.println("Reconnecting to WiFi..");
+              ;
              }
              else {
               MY_SERIAL.println("Reconnected");
@@ -151,7 +152,7 @@ void loop() {
         http.end();
     }
 
-    delay(30000);
+    delay(10000);
 }
 
 ///////////////////Turbidity Sensor//////////////////////
